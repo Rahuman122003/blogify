@@ -1,0 +1,246 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap');
+
+@layer base {
+  :root {
+    /* Clean modern palette - light mode */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
+
+    --radius: 0.5rem;
+
+    /* Blog Header - Dark */
+    --blog-header: 0 0% 9%;
+    --blog-header-foreground: 0 0% 98%;
+
+    /* Blog-specific tokens */
+    --blog-heading: 0 0% 9%;
+    --blog-body: 0 0% 25%;
+    --blog-meta: 0 0% 50%;
+    --blog-link: 0 0% 9%;
+    --blog-link-hover: 0 0% 30%;
+    --blog-divider: 0 0% 92%;
+    --blog-code-bg: 220 15% 95%;
+    --blog-quote-border: 0 0% 9%;
+    --blog-image-overlay: 0 0% 9%;
+
+    /* Admin tokens */
+    --admin-sidebar: 0 0% 97%;
+    --admin-sidebar-active: 0 0% 9%;
+    --admin-success: 145 65% 42%;
+    --admin-warning: 35 92% 50%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: 0 0% 98%;
+
+    --blog-header: 0 0% 9%;
+    --blog-header-foreground: 0 0% 98%;
+
+    --blog-heading: 0 0% 98%;
+    --blog-body: 0 0% 85%;
+    --blog-meta: 0 0% 55%;
+    --blog-link: 0 0% 98%;
+    --blog-link-hover: 0 0% 80%;
+    --blog-divider: 0 0% 25%;
+    --blog-code-bg: 220 15% 18%;
+    --blog-quote-border: 0 0% 98%;
+    --blog-image-overlay: 0 0% 5%;
+
+    --admin-sidebar: 0 0% 12%;
+    --admin-sidebar-active: 0 0% 98%;
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+@layer components {
+  .blog-heading {
+    @apply text-[hsl(var(--blog-heading))] font-semibold tracking-tight;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .blog-body {
+    @apply text-[hsl(var(--blog-body))] leading-relaxed;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .blog-meta {
+    @apply text-[hsl(var(--blog-meta))] text-sm font-medium uppercase tracking-wider;
+  }
+
+  .blog-link {
+    @apply text-[hsl(var(--blog-link))] hover:text-[hsl(var(--blog-link-hover))] transition-colors duration-200 underline decoration-1 underline-offset-2;
+  }
+
+  .blog-card {
+    @apply bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .blog-card-image {
+    @apply aspect-[16/10] object-cover w-full transition-transform duration-500;
+  }
+
+  .blog-card:hover .blog-card-image {
+    @apply scale-105;
+  }
+
+  .blog-content h2 {
+    @apply blog-heading text-2xl md:text-3xl mt-10 mb-4;
+  }
+
+  .blog-content h3 {
+    @apply blog-heading text-xl md:text-2xl mt-8 mb-3;
+  }
+
+  .blog-content p {
+    @apply blog-body text-lg mb-6;
+  }
+
+  .blog-content img {
+    @apply rounded-lg my-8 w-full;
+  }
+
+  .blog-content blockquote {
+    @apply border-l-4 border-[hsl(var(--blog-quote-border))] pl-6 my-8 italic text-[hsl(var(--blog-meta))];
+  }
+
+  .blog-content code {
+    @apply bg-[hsl(var(--blog-code-bg))] px-2 py-1 rounded text-sm;
+  }
+
+  .blog-content pre {
+    @apply bg-[hsl(var(--blog-code-bg))] p-4 rounded-lg overflow-x-auto my-6;
+  }
+
+  .admin-input {
+    @apply border border-border rounded-md px-4 py-2 bg-background focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
+  }
+
+  .admin-button {
+    @apply bg-primary text-primary-foreground px-6 py-2 rounded-md font-medium hover:opacity-90 transition-all duration-200 disabled:opacity-50;
+  }
+
+  .admin-button-secondary {
+    @apply bg-secondary text-secondary-foreground px-6 py-2 rounded-md font-medium hover:bg-secondary/80 transition-all duration-200;
+  }
+
+  .admin-button-danger {
+    @apply bg-destructive text-destructive-foreground px-6 py-2 rounded-md font-medium hover:opacity-90 transition-all duration-200;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
