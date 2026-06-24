@@ -23,7 +23,6 @@ export function ProSmartEnergyHeader() {
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm" style={{ color: '#6b8f78' }}>
           <Link to="/prosmart-energy/blogs" className="hover:text-white transition-colors">Blog</Link>
-          <Link to="/" className="hover:text-white transition-colors">All Sites</Link>
         </nav>
       </div>
     </header>
@@ -64,12 +63,7 @@ export function ProSmartEnergyList({ blogs, isLoading, error }: ListProps) {
       <ProSmartEnergyHeader />
 
       <div className="max-w-6xl mx-auto px-8 py-10">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm transition-colors mb-10"
-          style={{ color: '#4a6b58' }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#4a6b58')}>
-          <ArrowLeft className="w-4 h-4" /> All Publications
-        </Link>
+
 
         {isLoading && <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin" style={{ color: GREEN }} /></div>}
         {error && <p className="text-center py-16" style={{ color: '#f87171' }}>Failed to load posts.</p>}

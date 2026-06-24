@@ -18,7 +18,6 @@ export function ProbizConnectHeader() {
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm text-gray-500">
           <Link to="/probiz-connect/blogs" className="hover:text-gray-900 transition-colors">Blogs</Link>
-          <Link to="/" className="hover:text-gray-900 transition-colors">All Sites</Link>
         </nav>
       </div>
     </header>
@@ -55,9 +54,7 @@ export function ProbizConnectList({ blogs, isLoading, error }: ListProps) {
       {/* Hero banner */}
       <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-16">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-8">
-            <ArrowLeft className="w-4 h-4" /> All Publications
-          </Link>
+
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Insights & Updates</p>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
             Transform Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Business</span>

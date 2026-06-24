@@ -17,7 +17,6 @@ export function BlynTechHeader() {
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm text-white/50">
           <Link to="/blyn-tech/blogs" className="hover:text-white transition-colors">Insights</Link>
-          <Link to="/" className="hover:text-white transition-colors">All Sites</Link>
         </nav>
       </div>
     </header>
@@ -49,9 +48,7 @@ export function BlynTechList({ blogs, isLoading, error }: ListProps) {
       <BlynTechHeader />
 
       <div className="max-w-6xl mx-auto px-8 py-16">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm text-white/30 hover:text-white/70 transition-colors mb-12">
-          <ArrowLeft className="w-4 h-4" /> All Publications
-        </Link>
+
 
         {isLoading && <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-white/30" /></div>}
         {error && <p className="text-center text-red-400 py-16">Failed to load posts.</p>}

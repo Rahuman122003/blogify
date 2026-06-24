@@ -18,7 +18,6 @@ export function ProbizRetailHeader() {
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm text-gray-400">
           <Link to="/probiz-retail/blogs" className="hover:text-gray-900 transition-colors">Blog</Link>
-          <Link to="/" className="hover:text-gray-900 transition-colors">All Sites</Link>
         </nav>
       </div>
     </header>
@@ -53,12 +52,8 @@ export function ProbizRetailList({ blogs, isLoading, error }: ListProps) {
           background: 'radial-gradient(ellipse 80% 60% at 20% 60%, #dbeafe 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 30%, #f3e8ff 0%, transparent 55%), radial-gradient(ellipse 70% 70% at 50% 50%, #fce7f3 0%, transparent 70%), linear-gradient(180deg, #f8faff 0%, #f5f0ff 50%, #fdf4ff 100%)',
         }}
       >
-        <div className="max-w-4xl mx-auto px-8 pt-6 pb-4">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> All Publications
-          </Link>
-        </div>
-        <div className="max-w-4xl mx-auto px-8 pb-24 text-center">
+
+        <div className="max-w-4xl mx-auto px-8 pt-16 pb-24 text-center">
           {/* Press pill */}
           <div className="inline-flex items-center gap-2 border border-gray-200 bg-white/60 backdrop-blur-sm rounded-full px-4 py-1.5 mb-10">
             <span className="text-xs text-gray-500 font-medium">Press</span>
