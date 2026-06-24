@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -8,9 +8,10 @@ export function useSupabaseAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  // Prevent double-initialization race between getSession and onAuthStateChange
+  const initialized = useRef(false);
 
-  // Check if user has admin role
-  const checkAdminRole = useCallback(async (userId: string) => {
+  const checkAdminRole = useCallback(async (userId: string): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from('user_roles')
@@ -32,33 +33,43 @@ export function useSupabaseAuth() {
   }, []);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Subscribe to auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
+      async (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
-        setIsLoading(false);
 
-        // Defer admin check with setTimeout to avoid Supabase deadlock
         if (currentSession?.user) {
-          setTimeout(() => {
-            checkAdminRole(currentSession.user.id).then(setIsAdmin);
+          // Defer to avoid Supabase internal deadlock
+          setTimeout(async () => {
+            const adminStatus = await checkAdminRole(currentSession.user.id);
+            setIsAdmin(adminStatus);
+            setIsLoading(false);
           }, 0);
         } else {
           setIsAdmin(false);
+          setIsLoading(false);
         }
+
+        initialized.current = true;
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: existingSession } }) => {
+    // Hydrate existing session on mount
+    supabase.auth.getSession().then(async ({ data: { session: existingSession } }) => {
+      // If onAuthStateChange already fired, skip to avoid double-set
+      if (initialized.current) return;
+
       setSession(existingSession);
       setUser(existingSession?.user ?? null);
-      setIsLoading(false);
 
       if (existingSession?.user) {
-        checkAdminRole(existingSession.user.id).then(setIsAdmin);
+        const adminStatus = await checkAdminRole(existingSession.user.id);
+        setIsAdmin(adminStatus);
       }
+
+      setIsLoading(false);
+      initialized.current = true;
     });
 
     return () => subscription.unsubscribe();
@@ -74,7 +85,6 @@ export function useSupabaseAuth() {
 
       if (error) throw error;
 
-      // Check if user has admin role
       if (data.user) {
         const hasAdminRole = await checkAdminRole(data.user.id);
         if (!hasAdminRole) {
@@ -97,19 +107,17 @@ export function useSupabaseAuth() {
   const signUp = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
 
       if (error) throw error;
 
-      toast.success('Check your email for verification link!');
+      toast.success('Check your email for a verification link!');
       return { error: null };
     } catch (error) {
       const err = error as Error;

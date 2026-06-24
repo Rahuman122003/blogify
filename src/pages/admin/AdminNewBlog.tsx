@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateBlog } from '@/hooks/useBlogs';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { BlogEditor } from '@/components/admin/BlogEditor';
-import { DbBlogContentInsert } from '@/types/database';
+import { DbBlogContentInsert, SiteKey } from '@/types/database';
 
 export default function AdminNewBlog() {
   const createBlog = useCreateBlog();
@@ -17,6 +17,7 @@ export default function AdminNewBlog() {
     published: boolean;
     author: string;
     readingTime: string;
+    site: SiteKey;
   }) => {
     const blogData = {
       title: data.title,
@@ -26,6 +27,7 @@ export default function AdminNewBlog() {
       published: data.published,
       author: data.author,
       reading_time: data.readingTime,
+      site: data.site,
     };
 
     const contentData: Omit<DbBlogContentInsert, 'blog_id'>[] = data.content.map((block, index) => ({
@@ -37,11 +39,7 @@ export default function AdminNewBlog() {
 
     createBlog.mutate(
       { blog: blogData, content: contentData },
-      {
-        onSuccess: () => {
-          navigate('/admin/dashboard');
-        },
-      }
+      { onSuccess: () => navigate('/admin/dashboard') }
     );
   };
 

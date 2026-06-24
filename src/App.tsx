@@ -2,13 +2,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 
-// Blog Pages
+// Public Pages
+import Home from "./pages/Home";
 import BlogList from "./pages/BlogList";
 import BlogDetail from "./pages/BlogDetail";
+import NotFound from "./pages/NotFound";
 
 // Admin Pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -16,12 +18,10 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminNewBlog from "./pages/admin/AdminNewBlog";
 import AdminEditBlog from "./pages/admin/AdminEditBlog";
 
-import NotFound from "./pages/NotFound";
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5,
       retry: 1,
     },
   },
@@ -35,14 +35,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Redirect root to blogs */}
-            <Route path="/" element={<Navigate to="/blogs" replace />} />
-            
-            {/* Public Blog Routes */}
-            <Route path="/blogs" element={<BlogList />} />
-            <Route path="/blogs/:slug" element={<BlogDetail />} />
-            
-            {/* Admin Routes */}
+            {/* Home — shows all 4 sites */}
+            <Route path="/" element={<Home />} />
+
+            {/* Per-site blog routes */}
+            <Route path="/:site/blogs" element={<BlogList />} />
+            <Route path="/:site/blogs/:slug" element={<BlogDetail />} />
+
+            {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route
               path="/admin/dashboard"
@@ -68,8 +68,7 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            
-            {/* Catch-all */}
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

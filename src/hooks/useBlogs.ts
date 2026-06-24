@@ -1,52 +1,59 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { DbBlog, DbBlogContent, DbBlogInsert, DbBlogContentInsert, BlogWithContent } from '@/types/database';
+import { DbBlog, DbBlogContent, DbBlogInsert, DbBlogContentInsert, BlogWithContent, SiteKey } from '@/types/database';
 import { toast } from 'sonner';
 
 type BlogContentType = 'paragraph' | 'heading2' | 'heading3' | 'image';
 
-// Fetch all published blogs (public)
-export function usePublishedBlogs() {
+// Fetch published blogs for a specific site (public)
+export function usePublishedBlogs(site: SiteKey) {
   return useQuery({
-    queryKey: ['blogs', 'published'],
+    queryKey: ['blogs', 'published', site],
     queryFn: async (): Promise<DbBlog[]> => {
       const { data, error } = await supabase
         .from('blogs')
         .select('*')
         .eq('published', true)
+        .eq('site', site)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as DbBlog[];
     },
   });
 }
 
-// Fetch all blogs (admin only - includes drafts)
-export function useAllBlogs() {
+// Fetch ALL blogs across all sites (admin only)
+export function useAllBlogs(site?: SiteKey) {
   return useQuery({
-    queryKey: ['blogs', 'all'],
+    queryKey: ['blogs', 'all', site ?? 'all'],
     queryFn: async (): Promise<DbBlog[]> => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('blogs')
         .select('*')
         .order('created_at', { ascending: false });
 
+      if (site) {
+        query = query.eq('site', site);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
-      return data || [];
+      return (data || []) as DbBlog[];
     },
   });
 }
 
-// Fetch single blog by slug with content
-export function useBlogBySlug(slug: string) {
+// Fetch single blog by slug + site with content
+export function useBlogBySlug(slug: string, site: SiteKey) {
   return useQuery({
-    queryKey: ['blog', slug],
+    queryKey: ['blog', site, slug],
     queryFn: async (): Promise<BlogWithContent | null> => {
       const { data: blog, error: blogError } = await supabase
         .from('blogs')
         .select('*')
         .eq('slug', slug)
+        .eq('site', site)
         .eq('published', true)
         .maybeSingle();
 
@@ -61,18 +68,14 @@ export function useBlogBySlug(slug: string) {
 
       if (contentError) throw contentError;
 
-      // Cast the content types properly
       const typedContent: DbBlogContent[] = (content || []).map(item => ({
         ...item,
         type: item.type as BlogContentType,
       }));
 
-      return {
-        ...blog,
-        blog_content: typedContent,
-      };
+      return { ...(blog as DbBlog), blog_content: typedContent };
     },
-    enabled: !!slug,
+    enabled: !!slug && !!site,
   });
 }
 
@@ -98,16 +101,12 @@ export function useBlogById(id: string) {
 
       if (contentError) throw contentError;
 
-      // Cast the content types properly
       const typedContent: DbBlogContent[] = (content || []).map(item => ({
         ...item,
         type: item.type as BlogContentType,
       }));
 
-      return {
-        ...blog,
-        blog_content: typedContent,
-      };
+      return { ...(blog as DbBlog), blog_content: typedContent };
     },
     enabled: !!id,
   });
@@ -125,7 +124,6 @@ export function useCreateBlog() {
       blog: DbBlogInsert;
       content: Omit<DbBlogContentInsert, 'blog_id'>[];
     }) => {
-      // Insert blog
       const { data: newBlog, error: blogError } = await supabase
         .from('blogs')
         .insert(blog)
@@ -134,7 +132,6 @@ export function useCreateBlog() {
 
       if (blogError) throw blogError;
 
-      // Insert content blocks
       if (content.length > 0) {
         const contentWithBlogId = content.map((block, index) => ({
           ...block,
@@ -175,7 +172,6 @@ export function useUpdateBlog() {
       blog: Partial<DbBlogInsert>;
       content: Omit<DbBlogContentInsert, 'blog_id'>[];
     }) => {
-      // Update blog
       const { data: updatedBlog, error: blogError } = await supabase
         .from('blogs')
         .update(blog)
@@ -185,7 +181,6 @@ export function useUpdateBlog() {
 
       if (blogError) throw blogError;
 
-      // Delete existing content
       const { error: deleteError } = await supabase
         .from('blog_content')
         .delete()
@@ -193,7 +188,6 @@ export function useUpdateBlog() {
 
       if (deleteError) throw deleteError;
 
-      // Insert new content
       if (content.length > 0) {
         const contentWithBlogId = content.map((block, index) => ({
           ...block,
@@ -258,7 +252,7 @@ export function useTogglePublish() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      toast.success(data.published ? 'Blog published!' : 'Blog unpublished');
+      toast.success((data as DbBlog).published ? 'Blog published!' : 'Blog unpublished');
     },
     onError: (error: Error) => {
       toast.error(`Failed to update publish status: ${error.message}`);

@@ -10,6 +10,7 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isAdmin, isLoading } = useAuth();
 
+  // Show spinner while auth state is being determined
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -18,6 +19,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
+  // Not logged in or not an admin → back to login
   if (!isAuthenticated || !isAdmin) {
     return <Navigate to="/admin" replace />;
   }

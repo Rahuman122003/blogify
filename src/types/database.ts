@@ -1,5 +1,60 @@
 // Database types matching Supabase schema
 
+export type SiteKey = 'probiz-connect' | 'prosmart-energy' | 'probiz-retail' | 'blyn-tech';
+
+export interface SiteConfig {
+  key: SiteKey;
+  name: string;
+  description: string;
+  color: string;        // tailwind bg color class
+  textColor: string;   // tailwind text color class
+  borderColor: string; // tailwind border color class
+  emoji: string;
+}
+
+export const SITES: SiteConfig[] = [
+  {
+    key: 'probiz-connect',
+    name: 'Probiz Connect Blog',
+    description: 'News, insights and stories from Probiz Connect',
+    color: 'bg-blue-600',
+    textColor: 'text-blue-600',
+    borderColor: 'border-blue-600',
+    emoji: '',
+  },
+  {
+    key: 'prosmart-energy',
+    name: 'ProSmart Energy',
+    description: 'Smart energy solutions and sustainability insights',
+    color: 'bg-green-600',
+    textColor: 'text-green-600',
+    borderColor: 'border-green-600',
+    emoji: '',
+  },
+  {
+    key: 'probiz-retail',
+    name: 'Probiz Retail',
+    description: 'Retail trends, strategies and business insights',
+    color: 'bg-orange-500',
+    textColor: 'text-orange-500',
+    borderColor: 'border-orange-500',
+    emoji: '',
+  },
+  {
+    key: 'blyn-tech',
+    name: 'BLYN Tech',
+    description: 'Technology, innovation and digital transformation',
+    color: 'bg-purple-600',
+    textColor: 'text-purple-600',
+    borderColor: 'border-purple-600',
+    emoji: '',
+  },
+];
+
+export function getSiteConfig(key: string): SiteConfig | undefined {
+  return SITES.find(s => s.key === key);
+}
+
 export interface DbBlog {
   id: string;
   title: string;
@@ -9,6 +64,7 @@ export interface DbBlog {
   author: string | null;
   reading_time: string | null;
   published: boolean;
+  site: SiteKey;
   created_at: string;
   updated_at: string;
 }

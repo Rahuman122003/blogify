@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useImageUpload } from '@/hooks/useImageUpload';
+import { SITES, SiteKey } from '@/types/database';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +30,7 @@ interface BlogEditorProps {
     coverImage?: string;
     author?: string;
     published?: boolean;
+    site?: SiteKey;
     content?: ContentBlock[];
   };
   onSave: (data: {
@@ -40,6 +42,7 @@ interface BlogEditorProps {
     published: boolean;
     author: string;
     readingTime: string;
+    site: SiteKey;
   }) => void;
   isLoading?: boolean;
 }
@@ -52,6 +55,7 @@ export function BlogEditor({ initialData, onSave, isLoading }: BlogEditorProps) 
   const [description, setDescription] = useState(initialData?.description || '');
   const [coverImage, setCoverImage] = useState(initialData?.coverImage || '');
   const [author, setAuthor] = useState(initialData?.author || '');
+  const [site, setSite] = useState<SiteKey>(initialData?.site || 'probiz-connect');
   const [content, setContent] = useState<ContentBlock[]>(initialData?.content || []);
   const [published, setPublished] = useState(initialData?.published || false);
 
@@ -139,6 +143,7 @@ export function BlogEditor({ initialData, onSave, isLoading }: BlogEditorProps) 
       content,
       published,
       author,
+      site,
       readingTime: calculateReadingTime(),
     });
   };
@@ -148,6 +153,27 @@ export function BlogEditor({ initialData, onSave, isLoading }: BlogEditorProps) 
       {/* Meta Section */}
       <div className="bg-card rounded-lg p-6 border border-border space-y-6">
         <h2 className="font-serif text-xl font-semibold text-foreground">Post Details</h2>
+
+        {/* Site Selector */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Site *</label>
+          <div className="flex flex-wrap gap-2">
+            {SITES.map(s => (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => setSite(s.key)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                  site === s.key
+                    ? `${s.color} text-white border-transparent`
+                    : `bg-background ${s.textColor} ${s.borderColor} hover:bg-muted`
+                }`}
+              >
+                {s.emoji} {s.name}
+              </button>
+            ))}
+          </div>
+        </div>
         
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
