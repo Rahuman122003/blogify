@@ -18,6 +18,7 @@ export default function AdminNewBlog() {
     author: string;
     readingTime: string;
     site: SiteKey;
+    category: string;
   }) => {
     const blogData = {
       title: data.title,
@@ -28,6 +29,7 @@ export default function AdminNewBlog() {
       author: data.author,
       reading_time: data.readingTime,
       site: data.site,
+      category: data.category || null,
     };
 
     const contentData: Omit<DbBlogContentInsert, 'blog_id'>[] = data.content.map((block, index) => ({

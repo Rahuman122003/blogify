@@ -2,6 +2,14 @@
 
 export type SiteKey = 'probiz-connect' | 'prosmart-energy' | 'probiz-retail' | 'blyn-tech';
 
+// Categories per site
+export const SITE_CATEGORIES: Record<SiteKey, string[]> = {
+  'probiz-connect': ['All', 'Sales', 'Distribution', 'Technology', 'Case Studies', 'News'],
+  'prosmart-energy': ['All', 'Energy', 'Automation', 'Compliance', 'Case Studies', 'Sustainability'],
+  'probiz-retail': ['All', 'Press', 'Product', 'Retail Tech', 'Funding', 'Partnerships'],
+  'blyn-tech': ['All', 'Design Systems', 'Engineering', 'Brand', 'AI', 'Insights'],
+};
+
 export interface SiteConfig {
   key: SiteKey;
   name: string;
@@ -65,6 +73,7 @@ export interface DbBlog {
   reading_time: string | null;
   published: boolean;
   site: SiteKey;
+  category: string | null;
   created_at: string;
   updated_at: string;
 }

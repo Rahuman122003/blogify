@@ -1,11 +1,10 @@
 // ─── Probiz Retail Theme ─────────────────────────────────────────────────────
-// White bg, soft blue-pink-purple mesh gradient hero, centered huge headline,
-// italic purple serif second line, article list with colored source + arrow
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { DbBlog, BlogWithContent } from '@/types/database';
+import { DbBlog, BlogWithContent, SITE_CATEGORIES } from '@/types/database';
 import { BlogContentRenderer } from '../BlogContent';
 import probizRetailLogo from '@/assets/probiz-retail-logo.png';
 
@@ -17,7 +16,7 @@ export function ProbizRetailHeader() {
           <img src={probizRetailLogo} alt="Probiz Retail" className="h-9 w-auto object-contain" />
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm text-gray-400">
-          <Link to="/probiz-retail/blogs" className="hover:text-gray-900 transition-colors">Blog</Link>
+          <Link to="/probiz-retail/blogs" className="hover:text-gray-900 transition-colors font-medium">Blog</Link>
         </nav>
       </div>
     </header>
@@ -29,10 +28,7 @@ export function ProbizRetailFooter() {
     <footer className="bg-white border-t border-gray-100 py-10 mt-20">
       <div className="max-w-6xl mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <img src={probizRetailLogo} alt="Probiz Retail" className="h-7 w-auto object-contain" />
-        <div className="flex items-center gap-6 text-xs text-gray-400">
-          <Link to="/" className="hover:text-gray-600 transition-colors">All Publications</Link>
-          <span>© {new Date().getFullYear()} Probiz Connect</span>
-        </div>
+        <span className="text-xs text-gray-400">© {new Date().getFullYear()} Probiz Technologies. All rights reserved.</span>
       </div>
     </footer>
   );
@@ -41,68 +37,80 @@ export function ProbizRetailFooter() {
 interface ListProps { blogs: DbBlog[]; isLoading: boolean; error: unknown; }
 
 export function ProbizRetailList({ blogs, isLoading, error }: ListProps) {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const categories = SITE_CATEGORIES['probiz-retail'];
+
+  const filtered = activeCategory === 'All'
+    ? blogs
+    : blogs.filter(b => b.category === activeCategory);
+
   return (
     <div className="min-h-screen bg-white">
       <ProbizRetailHeader />
 
-      {/* Mesh gradient hero — exactly like probizretail.com/press */}
+      {/* Mesh gradient hero */}
       <div
         className="relative overflow-hidden"
         style={{
           background: 'radial-gradient(ellipse 80% 60% at 20% 60%, #dbeafe 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 30%, #f3e8ff 0%, transparent 55%), radial-gradient(ellipse 70% 70% at 50% 50%, #fce7f3 0%, transparent 70%), linear-gradient(180deg, #f8faff 0%, #f5f0ff 50%, #fdf4ff 100%)',
         }}
       >
-
-        <div className="max-w-4xl mx-auto px-8 pt-16 pb-24 text-center">
-          {/* Press pill */}
-          <div className="inline-flex items-center gap-2 border border-gray-200 bg-white/60 backdrop-blur-sm rounded-full px-4 py-1.5 mb-10">
+        <div className="max-w-4xl mx-auto px-8 pt-16 pb-20 text-center">
+          <div className="inline-flex items-center border border-gray-200 bg-white/60 backdrop-blur-sm rounded-full px-4 py-1.5 mb-10">
             <span className="text-xs text-gray-500 font-medium">Press</span>
           </div>
-
-          <h1 className="text-6xl md:text-8xl font-bold text-gray-900 leading-tight mb-2">
-            Probiz in
-          </h1>
-          <h1
-            className="text-6xl md:text-8xl font-bold leading-tight mb-6"
-            style={{
-              fontStyle: 'italic',
-              fontFamily: 'Georgia, serif',
-              background: 'linear-gradient(135deg, #7c3aed, #a855f7, #ec4899)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <h1 className="text-6xl md:text-8xl font-bold text-gray-900 leading-tight mb-2">Probiz in</h1>
+          <h1 className="text-6xl md:text-8xl font-bold leading-tight mb-6"
+            style={{ fontStyle: 'italic', fontFamily: 'Georgia, serif', background: 'linear-gradient(135deg, #7c3aed, #a855f7, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             the news.
           </h1>
-          <p className="text-gray-400 text-base max-w-sm mx-auto">
-            Media coverage, press releases, and brand assets for journalists.
-          </p>
+          <p className="text-gray-400 text-base max-w-sm mx-auto">Media coverage, press releases, and brand assets for journalists.</p>
+        </div>
+      </div>
+
+      {/* Category pills */}
+      <div className="max-w-3xl mx-auto px-8 pt-8 pb-2">
+        <div className="flex flex-wrap gap-2">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
+                activeCategory === cat
+                  ? 'bg-violet-600 text-white border-transparent'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-violet-300 hover:text-violet-600'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Article list */}
-      <div className="max-w-3xl mx-auto px-8 py-16">
+      <div className="max-w-3xl mx-auto px-8 py-10">
         {isLoading && <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-violet-400" /></div>}
         {error && <p className="text-center text-red-500 py-16">Failed to load posts.</p>}
-        {!isLoading && !error && blogs.length === 0 && (
-          <p className="text-center text-gray-400 py-16 text-sm">No posts published yet.</p>
+        {!isLoading && !error && filtered.length === 0 && (
+          <p className="text-center text-gray-400 py-16 text-sm">No posts in this category yet.</p>
         )}
-        {!isLoading && !error && blogs.length > 0 && (
+        {!isLoading && !error && filtered.length > 0 && (
           <div className="divide-y divide-gray-100">
-            {blogs.map(blog => (
+            {filtered.map(blog => (
               <Link
                 key={blog.id}
                 to={`/probiz-retail/blogs/${blog.slug}`}
                 className="group block py-9 first:pt-0"
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-semibold text-violet-600">
-                    {blog.author || 'Probiz Retail'}
-                  </span>
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
+                  {blog.category && (
+                    <span className="text-xs font-semibold bg-violet-50 text-violet-600 px-3 py-1 rounded-full border border-violet-100">
+                      {blog.category}
+                    </span>
+                  )}
+                  <span className="text-sm font-semibold text-violet-600">{blog.author || 'Probiz Retail'}</span>
                   <span className="text-gray-300 text-sm">→</span>
-                  <span className="text-sm text-gray-400">
-                    {format(new Date(blog.created_at), 'MMM yyyy')}
-                  </span>
+                  <span className="text-sm text-gray-400">{format(new Date(blog.created_at), 'MMM yyyy')}</span>
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 leading-snug group-hover:text-violet-700 transition-colors mb-2">
                   {blog.title}
@@ -127,19 +135,20 @@ export function ProbizRetailDetail({ blog, relatedPosts, siteKey }: DetailProps)
   return (
     <div className="min-h-screen bg-white">
       <ProbizRetailHeader />
-
-      {/* Hero image */}
       <div className="w-full h-72 md:h-96 overflow-hidden">
         <img src={blog.cover_image || '/placeholder.svg'} alt={blog.title} className="w-full h-full object-cover" />
       </div>
-
-      {/* Article body */}
       <div className="max-w-3xl mx-auto px-6 py-12 pb-20">
         <article className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12 overflow-hidden">
           <Link to={`/${siteKey}/blogs`} className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to posts
           </Link>
           <div className="flex flex-wrap items-center gap-2 mb-3">
+            {blog.category && (
+              <span className="text-xs font-semibold bg-violet-50 text-violet-600 px-3 py-1 rounded-full border border-violet-100">
+                {blog.category}
+              </span>
+            )}
             <span className="text-sm font-semibold text-violet-600">{blog.author || 'Probiz Retail'}</span>
             <span className="text-gray-300">→</span>
             <span className="text-sm text-gray-400">{format(new Date(blog.created_at), 'MMMM d, yyyy')}</span>
@@ -151,7 +160,6 @@ export function ProbizRetailDetail({ blog, relatedPosts, siteKey }: DetailProps)
             <BlogContentRenderer content={content} />
           </div>
         </article>
-
         {relatedPosts.length > 0 && (
           <section className="pt-14">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Continue Reading</h2>

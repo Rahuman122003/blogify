@@ -63,7 +63,7 @@ export default function Home() {
       <footer className="border-t border-border mt-12">
         <div className="container mx-auto px-6 py-6 max-w-4xl">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Probiz Connect. All rights reserved.
+            © {new Date().getFullYear()} Probiz Technologies. All rights reserved.
           </p>
         </div>
       </footer>

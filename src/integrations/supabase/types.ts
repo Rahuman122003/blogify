@@ -20,6 +20,7 @@ export type Database = {
           reading_time: string | null
           published: boolean | null
           site: string
+          category: string | null
           created_at: string
           updated_at: string
         }
@@ -33,6 +34,7 @@ export type Database = {
           reading_time?: string | null
           published?: boolean | null
           site: string
+          category?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -46,6 +48,7 @@ export type Database = {
           reading_time?: string | null
           published?: boolean | null
           site?: string
+          category?: string | null
           created_at?: string
           updated_at?: string
         }

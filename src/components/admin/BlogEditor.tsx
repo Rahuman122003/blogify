@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { SITES, SiteKey } from '@/types/database';
+import { SITES, SiteKey, SITE_CATEGORIES } from '@/types/database';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,7 @@ interface BlogEditorProps {
     author?: string;
     published?: boolean;
     site?: SiteKey;
+    category?: string;
     content?: ContentBlock[];
   };
   onSave: (data: {
@@ -43,6 +44,7 @@ interface BlogEditorProps {
     author: string;
     readingTime: string;
     site: SiteKey;
+    category: string;
   }) => void;
   isLoading?: boolean;
 }
@@ -56,6 +58,7 @@ export function BlogEditor({ initialData, onSave, isLoading }: BlogEditorProps) 
   const [coverImage, setCoverImage] = useState(initialData?.coverImage || '');
   const [author, setAuthor] = useState(initialData?.author || '');
   const [site, setSite] = useState<SiteKey>(initialData?.site || 'probiz-connect');
+  const [category, setCategory] = useState<string>(initialData?.category || '');
   const [content, setContent] = useState<ContentBlock[]>(initialData?.content || []);
   const [published, setPublished] = useState(initialData?.published || false);
 
@@ -144,6 +147,7 @@ export function BlogEditor({ initialData, onSave, isLoading }: BlogEditorProps) 
       published,
       author,
       site,
+      category,
       readingTime: calculateReadingTime(),
     });
   };
@@ -162,14 +166,35 @@ export function BlogEditor({ initialData, onSave, isLoading }: BlogEditorProps) 
               <button
                 key={s.key}
                 type="button"
-                onClick={() => setSite(s.key)}
+                onClick={() => { setSite(s.key); setCategory(''); }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
                   site === s.key
                     ? `${s.color} text-white border-transparent`
                     : `bg-background ${s.textColor} ${s.borderColor} hover:bg-muted`
                 }`}
               >
-                {s.emoji} {s.name}
+                {s.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Category Selector */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Category</label>
+          <div className="flex flex-wrap gap-2">
+            {SITE_CATEGORIES[site].filter(c => c !== 'All').map(cat => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setCategory(category === cat ? '' : cat)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                  category === cat
+                    ? 'bg-foreground text-background border-transparent'
+                    : 'bg-background text-muted-foreground border-border hover:bg-muted'
+                }`}
+              >
+                {cat}
               </button>
             ))}
           </div>
